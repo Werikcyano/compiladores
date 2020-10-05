@@ -133,6 +133,7 @@ estadosFinais = [
       {'estado': 19, 'tipo': 'AB_P'},
       {'estado': 20, 'tipo': 'FC_P'},
       {'estado': 21, 'tipo': 'PT_V'},
+      
     ]
 
 '''def verificarEstadoFinal (estadoFinal):
