@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*
+import string
 import sys
 
-with open('FONTE.mgol') as obj_arquivo:
-    arquivo = obj_arquivo.read()
-    print(arquivo)
 
 """#Definição do alfabeto
 Onde iremos definir o alfabeto
@@ -18,6 +16,13 @@ def busca(lista, chave, valor):
 
 
 class AnaLex():
+
+    def ler_arquivo(self):
+       self.arquivo = open('FONTE.mgol', 'rb')
+
+
+
+
     def letra(caractere):
         return caractere in string.ascii_letters  # Todas as letras maiscúlas e miniscúlas
 
@@ -200,7 +205,7 @@ class AnaLex():
         else:
             print("deu ruim")
 
-    verificarEstadoFinal(estadosFinais, 'estado', 17)
+    #verificarEstadoFinal(estadosFinais, 'estado', 17)
 
     """#Função de busca geral
     ##Essa função foi feita pela necessidade, constante, de fazer busca.
@@ -229,6 +234,11 @@ class AnaLex():
     palavrasReservadas = ['inicio', 'varinicio', 'varfim', 'escreva', 'leia', 'se', 'entao', 'senao', 'fimse', 'fim',
                           'literal', 'inteiro', 'real']
 
+
+    analise_inicializada = False
+    estado = 0
+    palavra = ""
+
     def verificarTabelaDeSimbolos(self, token, lexema, tipo=""):
 
         if ({'token': token, 'lexema': lexema, 'tipo': tipo} not in self.tabelaDeSimbolos and token == 'id'):
@@ -239,14 +249,16 @@ class AnaLex():
             for obj in self.tabelaDeSimbolos:
                 print(obj)'''
         else:
-            print("Já pertence a uma tabela de simbolos")
+            print("Já pertence a uma tabela de simbolosss")
+            print ({'token': token, 'lexema': lexema, 'tipo': tipo})
 
     def org_estado_final(self, estado):
         final = busca(self.estadosFinais, 'estado', estado)
         if final:
             if self.palavra in self.palavrasReservadas:
-                '''self.verificarTabelaDeSimbolos(self.palavra,self.palavra)'''
+                #self.verificarTabelaDeSimbolos(self.palavra,self.palavra)
                 print("Já pertence a uma tabela de simbolos")
+
             else:
                 self.verificarTabelaDeSimbolos(final['tipo'], self.palavra)
             self.palavra = ''
@@ -261,11 +273,97 @@ class AnaLex():
         if estado == 0:
             self.palavra = '' #testa se o estado atual é o estado Inicial
 
+    ##teste
+
+    '''print (range(len(tabelaDeTransicoes[1])))
+    print(range(len(tabelaDeTransicoes[2])))'''
+
+
+    contadorCaracteres =0
+    contadorLinhas = 0
+    tokenAtual = []
+
+    def proximoToken (self):
+        self.tokenAtual = self.arquivo.read(1).decode('ascii')
+        #print (self.tokenAtual)
+        if self.tokenAtual == "":
+            return True
+
+        self.contadorCaracteres += 1
+        guia = []
+        for i in range(0,22):
+            #print ('teste')
+            if not self.tabelaDeTransicoes[self.estado][i] == None:
+                guia.append({'posicaoAtual': i, 'ir_para': self.tabelaDeTransicoes[self.estado][i]})
+        print (guia)
+
+        respostas = []
+        for j in guia:
+            respostas.append({
+                'segue': self.mapaCaracteres[j['posicaoAtual']](self.tokenAtual),
+                'estado': j['ir_para'],
+                'caractere_atual': self.tokenAtual
+            })
+        print (respostas)
+        proximoEstado= busca(respostas, 'segue', True)
+        # Concatena caractere a palavra atual se teve retorno positivo muda o estado
+        if proximoEstado != False:
+            self.palavra += self.tokenAtual
+            self.estadoInicial(proximoEstado['estado'])
+            # adiciona 1 linha a contagem
+            if self.tokenAtual == "\n":
+                self.contadorCaracteres = 0
+                self.contadorLinhas += 1
+        else:
+            # volta 1 caractere ao caso de calabouço para reanalisá-lo
+            self.arquivo.seek(-1,1)
+            if not self.org_estado_final(self.estado):
+                self.verificarTabelaDeSimbolos("ERRO","Erro encontrado")
+                print("Erro na linha {} coluna {} - {} \nMensagem: {}".format(
+                    self.contadorLinhas,
+                    self.contadorCaracteres-1,
+                    self.palavra,
+                    busca(self.estadosNaoFinais, 'estado',self.estado)['erro']))
+                sys.exit()
+            return True
+
+
+    def inicializaContadores(self):
+        self.contador_linhas = 1
+        self.contador_caracteres = 0
+        self.tokenAtual = ":)"
+        self.analise_inicializada = True
+
+    def avaliaCondParada(self):
+        condicaoDeParada = False
+        while not condicaoDeParada:
+            condicaoDeParada = self.proximoToken()
+
+
+    def analisa_arquivo_completo(self):
+        while self.tokenAtual!= "":
+            self.avaliaCondParada()
+
+
+    def inicializa_analise(self):
+        self.contadorLinhas= 1;
+        self.contadorCaracteres = 0;
+        self.tokenAtual = "-"
+
+        self.analise_inicializada = True
+
+
+
 def main():
     analisadorLex = AnaLex()
 
-    analisadorLex.verificarTabelaDeSimbolos('id', 'ana')
+    #analisadorLex.verificarTabelaDeSimbolos('id', 'ana')
+    #analisadorLex.proximoToken()
+    analisadorLex.ler_arquivo()
+    analisadorLex.analisa_arquivo_completo()
 
 
 if __name__ == "__main__":
     main()
+
+##teste
