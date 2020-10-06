@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*
+import sys
 
-arquivo = open('D:\werik\Google Drive\Faculdade\Décimo Segundo Período\Compiladores 1\FONTE.mgol', 'r')
+arquivo = open(r'C:\Users\AntonioIgor\Documents\FONTE.mgol', 'r')
 for linha in arquivo:
     print(linha)
 arquivo.close()
@@ -9,61 +10,91 @@ arquivo.close()
 Onde iremos definir o alfabeto
 """
 
-def letra(caractere):
-    return caractere in string.ascii_letters #Todas as letras maiscúlas e miniscúlas
-def numero(caractere):
-    return caractere in string.digits #É equivalente a “0123456789”
-def exp(caractere):
-    return caractere in 'eE' # Função exponencial
-def caractereValido(caractere):
-    return caractere in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.<>=+-*/(),:;#$?_!%&|\\ "
-def ponto(caractere):
-    return "." == caractere
-def aspas(caractere):
-    return "\"" == caractere
-def underline(caractere):
-    return "_" == caractere
-def abreChave(caractere):
-    return "{" == caractere
-def fechaChave(caractere):
-    return "}" == caractere
-def menor(caractere):
-    return "<" == caractere
-def maior(caractere):
-    return ">" == caractere
-def igual(caractere):
-    return "=" == caractere
-def mais(caractere):
-    return "+" == caractere
-def menos(caractere):
-    return "-" == caractere
-def multiplicacao(caractere):
-    return "*" == caractere
-def divisao(caractere):
-    return "/" == caractere
-def abreParenteses(caractere):
-    return "(" == caractere
-def fechaParenteses(caractere):
-    return ")" == caractere
-def pontoVirgula(caractere):
-    return ";" == caractere
-def eof(caractere):
-    return "" == caractere
-def tab(caractere):
-    return "\t" == caractere
-def salto(caractere):
-    return "\n" == caractere
-def espaco(caractere):
-    return " " == caractere
 
-"""#Mapa de Caracteres
+def busca(lista, chave, valor):
+    for item in lista:
+        if item[chave] == valor:
+            return item
+    return False
 
-###Reconhecendo caracteres
-  #### Dicionário que mapeia cada caractere lido.
-"""
 
-mapaCaracteres = {
-    
+class AnaLex():
+    def letra(caractere):
+        return caractere in string.ascii_letters  # Todas as letras maiscúlas e miniscúlas
+
+    def numero(caractere):
+        return caractere in string.digits  # É equivalente a “0123456789”
+
+    def exp(caractere):
+        return caractere in 'eE'  # Função exponencial
+
+    def caractereValido(caractere):
+        return caractere in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.<>=+-*/(),:;#$?_!%&|\\ "
+
+    def ponto(caractere):
+        return "." == caractere
+
+    def aspas(caractere):
+        return "\"" == caractere
+
+    def underline(caractere):
+        return "_" == caractere
+
+    def abreChave(caractere):
+        return "{" == caractere
+
+    def fechaChave(caractere):
+        return "}" == caractere
+
+    def menor(caractere):
+        return "<" == caractere
+
+    def maior(caractere):
+        return ">" == caractere
+
+    def igual(caractere):
+        return "=" == caractere
+
+    def mais(caractere):
+        return "+" == caractere
+
+    def menos(caractere):
+        return "-" == caractere
+
+    def multiplicacao(caractere):
+        return "*" == caractere
+
+    def divisao(caractere):
+        return "/" == caractere
+
+    def abreParenteses(caractere):
+        return "(" == caractere
+
+    def fechaParenteses(caractere):
+        return ")" == caractere
+
+    def pontoVirgula(caractere):
+        return ";" == caractere
+
+    def eof(caractere):
+        return "" == caractere
+
+    def tab(caractere):
+        return "\t" == caractere
+
+    def salto(caractere):
+        return "\n" == caractere
+
+    def espaco(caractere):
+        return " " == caractere
+
+    """#Mapa de Caracteres
+    ###Reconhecendo caracteres
+    #### Dicionário que mapeia cada caractere lido.
+    """
+
+    mapaCaracteres = {
+
         0: letra,
         1: numero,
         2: exp,
@@ -90,76 +121,89 @@ mapaCaracteres = {
 
     }
 
-"""#Tabela de transição"""
+    """#Tabela de transição"""
 
-tabelaDeTransicoes = (
-(8,	1,	None,	None,	6,	None,	9,	None,	12,	15,	16,	17,	17,	17,	17,	18,	19,	20,	11,	0,	0,	0),
-(None,	1,	4,	2,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None),
-(None,	3,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None),
-(None,	3,	4,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None),
-(None,	3,	None,	None,	None,	None,	None,	None,	None,	None,	None,	5,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None),
-(None,	3,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None),
-(6,	6,	6,	6,	7,	6,	6,	6,	6,	6,	6,	6,	6,	6,	6,  6,	6,	6,	None,	6,	6,	6),
-(None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None),
-(8,	8,	None,	None,	None,	8,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None),
-(9,	9,	9,	9,	9,	9,	9,	10,	9,	9,	9,	9,	9,	9,	9,	9,	9,	9,	None,	9,	9,	9),
-(None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None),
-(None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None),
-(None,	None,	None,	None,	None,	None,	None,	None,	None,	13,	13,	None,	14,	None,	None,	None,	None,	None,	None,	None,	None,	None),
-(None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None),
-(None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None),
-(None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	13,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None),
-(None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None),
-(None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None),
-(None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None),
-(None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None),
-(None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None,	None)
-)
+    tabelaDeTransicoes = (
+        (8, 1, None, None, 6, None, 9, None, 12, 15, 16, 17, 17, 17, 17, 18, 19, 20, 11, 0, 0, 0),
+        (None, 1, 4, 2, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+         None, None),
+        (None, 3, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+         None, None, None),
+        (None, 3, 4, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+         None, None, None),
+        (None, 3, None, None, None, None, None, None, None, None, None, 5, None, None, None, None, None, None, None,
+         None, None, None),
+        (None, 3, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+         None, None, None),
+        (6, 6, 6, 6, 7, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, None, 6, 6, 6),
+        (None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+         None, None, None, None),
+        (8, 8, None, None, None, 8, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+         None, None),
+        (9, 9, 9, 9, 9, 9, 9, 10, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, None, 9, 9, 9),
+        (None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+         None, None, None, None),
+        (None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+         None, None, None, None),
+        (None, None, None, None, None, None, None, None, None, 13, 13, None, 14, None, None, None, None, None, None,
+         None, None, None),
+        (None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+         None, None, None, None),
+        (None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+         None, None, None, None),
+        (None, None, None, None, None, None, None, None, None, None, 13, None, None, None, None, None, None, None, None,
+         None, None, None),
+        (None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+         None, None, None, None),
+        (None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+         None, None, None, None),
+        (None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+         None, None, None, None),
+        (None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+         None, None, None, None),
+        (None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+         None, None, None, None)
+    )
 
-estadosFinais = [
-      {'estado': 1, 'tipo': 'Num'},
-      {'estado': 3, 'tipo': 'Num'},
-      {'estado': 6, 'tipo': 'Num'},
-      {'estado': 8, 'tipo': 'Literal'},
-      {'estado': 9, 'tipo': 'id'},
-      {'estado': 11, 'tipo': 'Comentário'},
-      {'estado': 12, 'tipo': 'EOF'},
-      {'estado': 13, 'tipo': 'OPR'},
-      {'estado': 14, 'tipo': 'OPR'},
-      {'estado': 15, 'tipo': 'OPR'},
-      {'estado': 17, 'tipo': 'OPR'},
-      {'estado': 16, 'tipo': 'RCB'},
-      {'estado': 18, 'tipo': 'OPM'},
-      {'estado': 19, 'tipo': 'AB_P'},
-      {'estado': 20, 'tipo': 'FC_P'},
-      {'estado': 21, 'tipo': 'PT_V'},
+    estadosFinais = [
+        {'estado': 1, 'tipo': 'Num'},
+        {'estado': 3, 'tipo': 'Num'},
+        {'estado': 7, 'tipo': 'Literal'},
+        {'estado': 8, 'tipo': 'id'},
+        {'estado': 10, 'tipo': 'Comentário'},
+        {'estado': 11, 'tipo': 'EOF'},
+        {'estado': 12, 'tipo': 'OPR'},
+        {'estado': 13, 'tipo': 'OPR'},
+        {'estado': 14, 'tipo': 'OPR'},
+        {'estado': 15, 'tipo': 'OPR'},
+        {'estado': 16, 'tipo': 'RCB'},
+        {'estado': 17, 'tipo': 'OPM'},
+        {'estado': 18, 'tipo': 'AB_P'},
+        {'estado': 19, 'tipo': 'FC_P'},
+        {'estado': 20, 'tipo': 'PT_V'},
+
     ]
 
-'''def verificarEstadoFinal (estadoFinal):
-  if {'estado final': estadoFinal} in estados_finais:
-    print ("é um estado final")
-  else:
-    print ("deu ruim")
-verificarEstadoFinal(18)'''
 
+    def verificarEstadoFinal(estadosFinais, estado, estadoAutomato):
+        verif = busca(estadosFinais, estado, estadoAutomato)
+        if (verif):
+            print("é um estado final")
+        else:
+            print("deu ruim")
 
+    verificarEstadoFinal(estadosFinais, 'estado', 17)
 
-"""#Função de busca geral
-##Essa função foi feita pela necessidade, constante, de fazer busca.
-"""
+    """#Função de busca geral
+    ##Essa função foi feita pela necessidade, constante, de fazer busca.
+    """
 
-def busca(lista, chave, valor):
-  for item in lista:
-    if item [chave] == valor:
-      return item 
-  return False
+    resultado = busca(estadosFinais, 'estado', 11)
+    print(resultado)
 
-resultado = busca(estadosFinais, 'estado', 11)
-print (resultado)
+    """#Tabela de Símbolos"""
 
-"""#Tabela de Símbolos"""
-
-tabelaDeSimbolos = [
+    tabelaDeSimbolos = [
         {'token': 'inicio', 'lexema': 'inicio', 'tipo': ''},
         {'token': 'varinicio', 'lexema': 'varinicio', 'tipo': ''},
         {'token': 'varfim', 'lexema': 'varfim', 'tipo': ''},
@@ -174,15 +218,34 @@ tabelaDeSimbolos = [
         {'token': 'inteiro', 'lexema': 'inteiro', 'tipo': ''},
         {'token': 'real', 'lexema': 'real', 'tipo': ''},
     ]
+    palavrasReservadas = ['inicio','varinicio','varfim','escreva','leia','se','entao','senao','fimse','fim','literal','inteiro','real']
 
-   
-def verificarTabelaDeSimbolos (token,lexema,tipo=''):
-      if {'token': token, 'lexema': lexema, 'tipo': tipo} not in tabelaDeSimbolos and token == 'id':
-        print ("Não pertence a tabela de simbolos e é um id")
-        tabelaDeSimbolos.append({'token': token, 'lexema': lexema,'tipo': tipo})
-      else:
-        print ("Já pertence a uma tabela de simbolos")
+    def verificarTabelaDeSimbolos(self, token, lexema, tipo=""):
+        if ({'token': token, 'lexema': lexema, 'tipo': tipo} not in self.tabelaDeSimbolos and token == 'id'):
+            self.tabelaDeSimbolos.append({'token': token, 'lexema': lexema, 'tipo': tipo})
+            print("Não pertence a tabela de simbolos e é um id")
+            for obj in self.tabelaDeSimbolos:
+                print(obj)
+        else:
+            print("Já pertence a uma tabela de simbolos")
+
+    def e_final(self,estado):
+        final = busca(self.estados_finais,'estado',estado)
+        if final:
+            if self.palavra in self.palavrasReservadas:
+                self.verificarEstadoFinal(self.palavra,self.palavra)
+            else:
+                self.verificarEstadoFinal(final['tipo'],self.palavra)
+            self.palavra = ''
+            self.estado = 0
+            return True
+        return False
+
+def main():
+    analisadorLex = AnaLex()
+
+    analisadorLex.verificarTabelaDeSimbolos('id', 'ana')
 
 
-verificarTabelaDeSimbolos('inicio','inicio')
-print(tabelaDeSimbolos)
+if __name__ == "__main__":
+    main()
