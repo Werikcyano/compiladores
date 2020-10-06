@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*
 import sys
 
-arquivo = open(r'C:\Users\AntonioIgor\Documents\FONTE.mgol', 'r')
-for linha in arquivo:
-    print(linha)
-arquivo.close()
+with open('FONTE.mgol') as obj_arquivo:
+    arquivo = obj_arquivo.read()
+    print(arquivo)
 
 """#Definição do alfabeto
 Onde iremos definir o alfabeto
@@ -184,6 +183,15 @@ class AnaLex():
 
     ]
 
+    estadosNaoFinais = [
+        {'estado': 0, 'erro': 'Caractere inválido para formação da primeira palavra da linguagem MGOL'},
+        {'estado': 2, 'erro': 'Número inválido - ponto não seguido por dígito'},
+        {'estado': 4, 'erro': 'Número inválido - exponencial não seguido por sinal ou dígito'},
+        {'estado': 5, 'erro': 'Número inválido - exponencial com sinal mas não seguido por dígito'},
+        {'estado': 6, 'erro': 'Literal inválido - Sem fechamento com aspas'},
+        {'estado': 9, 'erro': 'Comentário inválido - sem fechamento com chaves'},
+    ]
+
 
     def verificarEstadoFinal(estadosFinais, estado, estadoAutomato):
         verif = busca(estadosFinais, estado, estadoAutomato)
@@ -218,28 +226,39 @@ class AnaLex():
         {'token': 'inteiro', 'lexema': 'inteiro', 'tipo': ''},
         {'token': 'real', 'lexema': 'real', 'tipo': ''},
     ]
-    palavrasReservadas = ['inicio','varinicio','varfim','escreva','leia','se','entao','senao','fimse','fim','literal','inteiro','real']
+    palavrasReservadas = ['inicio', 'varinicio', 'varfim', 'escreva', 'leia', 'se', 'entao', 'senao', 'fimse', 'fim',
+                          'literal', 'inteiro', 'real']
 
     def verificarTabelaDeSimbolos(self, token, lexema, tipo=""):
+
         if ({'token': token, 'lexema': lexema, 'tipo': tipo} not in self.tabelaDeSimbolos and token == 'id'):
             self.tabelaDeSimbolos.append({'token': token, 'lexema': lexema, 'tipo': tipo})
-            print("Não pertence a tabela de simbolos e é um id")
+            # print("Não pertence a tabela de simbolos e é um id")
+            ''' laço para mostrar a tabela de simbolo
+            vamos utilizar para criar a funcao de printar a tabela de simbolos
             for obj in self.tabelaDeSimbolos:
-                print(obj)
+                print(obj)'''
         else:
             print("Já pertence a uma tabela de simbolos")
 
-    def e_final(self,estado):
-        final = busca(self.estados_finais,'estado',estado)
+    def org_estado_final(self, estado):
+        final = busca(self.estadosFinais, 'estado', estado)
         if final:
             if self.palavra in self.palavrasReservadas:
-                self.verificarEstadoFinal(self.palavra,self.palavra)
+                '''self.verificarTabelaDeSimbolos(self.palavra,self.palavra)'''
+                print("Já pertence a uma tabela de simbolos")
             else:
-                self.verificarEstadoFinal(final['tipo'],self.palavra)
+                self.verificarTabelaDeSimbolos(final['tipo'], self.palavra)
             self.palavra = ''
             self.estado = 0
+
             return True
         return False
+
+    def estadoInicial(self, estado):
+        self.estado = estado
+        if estado == 0:
+            self.palavra = '' #testa se o estado atual é o estado Inicial
 
 def main():
     analisadorLex = AnaLex()
