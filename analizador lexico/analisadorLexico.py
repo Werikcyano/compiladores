@@ -189,7 +189,11 @@ class AnaLex():
         {'estado': 4, 'erro': 'Número inválido - exponencial não seguido por sinal ou dígito'},
         {'estado': 5, 'erro': 'Número inválido - exponencial com sinal mas não seguido por dígito'},
         {'estado': 6, 'erro': 'Literal inválido - Sem fechamento com aspas'},
+<<<<<<< HEAD
         {'estado': 9, 'erro': 'Comentário inválido - sem fechamento com chaves'},
+=======
+        {'estado': 9, 'erro': 'Comentário  inválido - sem fechamento com chaves'},
+>>>>>>> tonho
     ]
 
 
@@ -254,6 +258,7 @@ class AnaLex():
 
             return True
         return False
+
 
     def estadoInicial(self, estado):
         self.estado = estado
