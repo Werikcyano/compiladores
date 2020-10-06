@@ -255,6 +255,7 @@ class AnaLex():
             return True
         return False
 
+
     def estadoInicial(self, estado):
         self.estado = estado
         if estado == 0:
